@@ -1,0 +1,15 @@
+first, pdftotext statements...pdf statement
+
+To find a sanity transaction list (just an initial substring):
+    egrep -o '\d\d/\d\d/\d\d +[^ ]+' statement | sed 's/  */ /g' | sort > transaction_sanity
+
+To run the text-to-CSV processor:
+    python to_csv.py statement > q.csv
+
+To sanity check (I iterated with this to figure out what was missing):
+    # vi q.csv and then s/,"/ /
+    grep -oFf transaction_sanity q.csv  | sort -u > missing
+    grep -v -Ff missing transaction_sanity
+The items output will be transactions missing from q.csv.  Manual editing of the Python script will be required.
+
+The sum of the third column should match the total reported in the yearly PDF.  If it doesn't, then some transactions were omitted.
